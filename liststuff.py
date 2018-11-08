@@ -1,4 +1,4 @@
-#! /usr/local/bin/python3
+#! /usr/bin/env python3
 
 def main():
   student_names = ["Mark", "Katarina", "Jessica", "Bort", "Frank Grimes"]
@@ -41,7 +41,31 @@ def main():
     print(f"Count is {x}")
     x += 1
 
-
+  # can index from the end as well using negative numbers
+  # REMEMBER: negative indices are 1-based, not zero-based
+  s = "show how to index into sequences".split()
+  print(s[-2])
   
+  # can use slices by referencing start/stop (stop not included)
+  print(s[1:3])
+
+  # first and last elements
+  print(s[1:-1])
+
+  # from 3rd to end
+  print(s[3:])
+
+  # from start to third
+  print(s[:3])
+
+  # full list
+  print(s[:])
+  # this is also a new list object, with identical contents
+
+  full_slice = s[:] # same as s.copy() or list(s) and are SHALLOW COPIES
+  print("full_slice is s", full_slice is s) # different objects
+  print("full_slice == s", full_slice == s) # same contents
+
+
 if __name__ == '__main__':
   main()
