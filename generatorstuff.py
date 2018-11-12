@@ -164,6 +164,10 @@ def sum_of_primes_less_than_or_equal_to(n):
     print(f"sum of the primes <= {n} is {result}")
 
 
+def any_primes_between(x, y):
+  return any(is_prime(x) for x in range(x,y))
+
+
 def main():
     wrong_way_to_use_generators()
 
@@ -183,6 +187,12 @@ def main():
     generator_comprehension()
     big_sum_via_generator_comprehension()
     sum_of_primes_less_than_or_equal_to(1000)
+
+    print(f"any_primes_between(1, 10): {any_primes_between(1, 10)}")
+    print(f"any_primes_between(123, 200): {any_primes_between(123, 200)}")
+    print(f"any_primes_between(1328, 1361): {any_primes_between(1328, 1361)}")
+
+
 
 
 if __name__ == '__main__':
