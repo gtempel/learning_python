@@ -14,6 +14,7 @@ an entry point the next time the method is executed.
 
 import sys
 from math import sqrt
+from itertools import islice, count
 
 
 def wrong_way_to_use_generators():
@@ -164,8 +165,22 @@ def sum_of_primes_less_than_or_equal_to(n):
     print(f"sum of the primes <= {n} is {result}")
 
 
-def any_primes_between(x, y):
-  return any(is_prime(x) for x in range(x,y))
+# there are, however, better built-in tools so we don't have
+# to roll our own as we did above:
+
+def islice_find_first_n_primes_example(n=1000):
+    # do something like this:
+    # islice(all_primes, 1000)
+    # but how to generate all_primes?
+    #
+    # we can do something like this, using count() to provide
+    # an open-ended range for us (basically, count forever, starting
+    # from zero with a step of 1...we could supply other parameters)
+    the_primes = islice((x for x in count() if is_prime(x)), n)
+    print(f"islice_find_first_n_primes_example: {list(the_primes)}")
+    the_total = sum(islice((x for x in count() if is_prime(x)), n))
+    print(f"islice_find_first_n_primes_example -- sum of those {n} primes",
+          the_total)
 
 
 def main():
@@ -188,11 +203,7 @@ def main():
     big_sum_via_generator_comprehension()
     sum_of_primes_less_than_or_equal_to(1000)
 
-    print(f"any_primes_between(1, 10): {any_primes_between(1, 10)}")
-    print(f"any_primes_between(123, 200): {any_primes_between(123, 200)}")
-    print(f"any_primes_between(1328, 1361): {any_primes_between(1328, 1361)}")
-
-
+    islice_find_first_n_primes_example()
 
 
 if __name__ == '__main__':
