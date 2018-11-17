@@ -7,7 +7,7 @@ them in in loops and such as you would with the collections.
 '''
 import sys
 from itertools import count, islice
-
+import math
 
 def write_to_new_file(filename):
     print("write_to_new_file({}):----------------".format(filename))
@@ -122,13 +122,6 @@ def generate_recamans_first_sequence():
     a (0) = 0 ; for  n > 0, a (n) = a (n  −  1)  −  n  
     if that number is positive and not already in the sequence, 
     otherwise  a (n) = a (n  −  1) + n , whether or not that number is already in the sequence
-
-    The second sequence by Recamán (A008336) can be described as 
-    “divide if possible, otherwise multiply”:  
-    a (1) = 1; a (n) = (a  (n  −  1))  / n  if  n ∣ a (n  −  1) , otherwise  a (n) = (a (n  −  1))  ⋅  n
-
-    A possible third sequence: “take root if possible, otherwise take power”.
-    a (1) = 2; a (n) = n √  a (n  −  1)  if  a (n  −  1)  is an  n th power, otherwise  a (n) = (a (n  −  1))  n 
     '''
     seen = set()
     a = 0
@@ -138,6 +131,52 @@ def generate_recamans_first_sequence():
         c = a - n
         if c < 0 or c in seen:
             c = a + n
+        a = c
+
+
+def generate_recamans_second_sequence():
+    '''
+    This is a generator...note the "yield" statement
+
+    Recaman's sequence is a recursive sequence, like fibonacci, but
+    there's a conditional operation subtracting OR adding.
+
+    The second sequence by Recamán (A008336) can be described as 
+    “divide if possible, otherwise multiply”:  
+    a (1) = 1; a (n) = (a  (n  −  1))  / n  if  n ∣ a (n  −  1) , otherwise  a (n) = (a (n  −  1))  ⋅  n
+    '''
+    seen = set()
+    a = 1
+    for n in count(1):  # a count starting at 1, start iterating
+        yield a
+        seen.add(a)
+        c = int(a / n)
+        if a%n != 0 or c in seen:
+            c = a * n
+        a = c
+
+def is_power(a, b):
+    while a % b == 0:
+        a = a // b
+    return a == 1
+
+def generate_recamans_third_sequence():
+    '''
+    This is a generator...note the "yield" statement
+
+    A possible third sequence: “take root if possible, otherwise take power”.
+    a (1) = 2; a (n) = n √  a (n  −  1)  if  a (n  −  1)  is an  n th power, otherwise  a (n) = (a (n  −  1))  n 
+    '''
+    seen = set()
+    a = 2
+    for n in count(1):  # a count starting at 1, start iterating
+        yield a
+        seen.add(a)
+        c = a ** (1/n)
+        if n == 1:
+            continue
+        if (is_power(a,n) == False) or c in seen:
+            c = a ** n
         a = c
 
 
@@ -212,6 +251,24 @@ def write_recamans_sequence_with_context_manager(filename, num, sequence_generat
                      for r in islice(sequence_generator, num + 1))
 
 
+def _words_per_line(file_like_object):
+    # might be a file,  might not be but simply acts like one
+    return [len(line.split()) for line in file_like_object.readlines()]
+
+
+def words_per_line_from_text(source):
+    with open(source, mode='rt', encoding='utf-8') as f:
+        wpl = _words_per_line(f)
+        print(f"words_per_line_from_text({source}): {wpl}")
+
+
+def words_per_line_from_url(source):
+    from urllib.request import urlopen
+    with urlopen(source) as f:
+        wpl = _words_per_line(f)
+        print(f"words_per_line_from_url({source}): {wpl}")
+
+
 def main():
     filename = "wasteland.txt"
     write_to_new_file(filename)
@@ -223,7 +280,7 @@ def main():
     iterate_file(filename)
 
     recamans_filename = 'recamans_first.txt'
-    recamans_count = 10
+    recamans_count = 3
     write_recamans_sequence(filename=recamans_filename,
                             num=recamans_count,
                             sequence_generator=generate_recamans_first_sequence())
@@ -233,6 +290,17 @@ def main():
                                                  num=recamans_count,
                                                  sequence_generator=generate_recamans_first_sequence())
     read_with_context_manager(filename=recamans_filename)
+
+    write_recamans_sequence_with_context_manager(filename='recamans_second.txt',
+                                                 num=recamans_count,
+                                                 sequence_generator=generate_recamans_second_sequence())
+
+    write_recamans_sequence_with_context_manager(filename='recamans_third.txt',
+                                                 num=recamans_count,
+                                                 sequence_generator=generate_recamans_third_sequence())
+
+    words_per_line_from_text(filename)
+    words_per_line_from_url('http://sixty-north.com/c/t.txt')
 
 
 if __name__ == '__main__':
