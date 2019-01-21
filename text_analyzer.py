@@ -8,10 +8,10 @@ def analyze_text(filename):
 
   Args:
     filename: the name of the file to analyze.
-  
+
   Raises:
     IOError: if ``filename`` does not exist or can't be read.
-  
+ 
   Returns: a tuple where first element is the number of lines in
     the file and the second element is the number of characters.
   """
