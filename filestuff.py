@@ -175,7 +175,7 @@ def generate_recamans_third_sequence():
         c = a ** (1/n)
         if n == 1:
             continue
-        if (is_power(a,n) == False) or c in seen:
+        if (not is_power(a,n)) or c in seen:
             c = a ** n
         a = c
 
