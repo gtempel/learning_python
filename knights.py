@@ -12,6 +12,10 @@ def take_action(number_of_knights):
   else:
     return 'attempt truce'
 
+num_knights = int(input('Enter the number of knights: '))
+print('You entered:', num_knights)
+print(take_action(num_knights))
+
 
 class Tests(unittest.TestCase):
   def test_retreat_for_less_than(self):
