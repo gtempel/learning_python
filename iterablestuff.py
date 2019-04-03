@@ -15,7 +15,7 @@ def iterable_and_iter(obj):
         print(f"{next(iterator)} = next(iterator)")
         print(f"{next(iterator)} = next(iterator)")
     except StopIteration as identifier:
-        print("Nothing more to iterate, got the StopIteration exception")
+        print(f"Nothing more to iterate, got the StopIteration exception: {identifier}")
     finally:
         print("Done")
 
@@ -25,7 +25,7 @@ def first_from_series(iterable):
   try:
     return next(iterator)
   except StopIteration as err:
-    raise ValueError("iterable is empty")
+    raise ValueError(f"iterable is empty: {err}")
 
 
 def is_prime(x):
@@ -105,6 +105,36 @@ def chaining_iterables():
         print(value)
 
 
+def map_ord(data):
+    results = map(ord, data)
+    print(f"mapping_ord({data}): {list(results)}")
+
+
+def map_is_lazy(data):
+    class Trace:
+        def __init__(self):
+            self.enabled = True
+   
+        def __call__(self, f):
+            def wrap(*args, **kwargs):
+                if self.enabled:
+                    print('Calling {} within map_is_lazy()'.format(f))
+                return f(*args, **kwargs)
+            return wrap
+    
+    print(f"map_is_lazy({data}) will now show traces that prove that the mapping is now taking place: ")
+    results = map(Trace()(ord), data)
+    print(f"{list(results)}")
+
+
+def map_with_multiple_input_sequences(data1, data2, data3):
+    def combine(a, b, c):
+        return [a, b, c]
+
+    results = map(combine, data1, data2, data3)
+    print(f"map_with_multiple_input_sequences({data1}, {data2}, {data3}): {list(results)}")
+
+
 def main():
     iterable_and_iter(['Spring', 'Summer', 'Autumn', 'Winter'])
     first_from_series(['A', 'B', 'C'])
@@ -120,7 +150,13 @@ def main():
 
     chaining_iterables()
 
-    
+    map_ord('the quick brown fox')
+    map_is_lazy('the quick brown fox')
+    map_with_multiple_input_sequences(['red', 'orange', 'yellow'],
+        [1, 2, 3],
+        ['emmet', 'bitsy', 'spike']
+        )
+
 
 if __name__ == '__main__':
     main()
