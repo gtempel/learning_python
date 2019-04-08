@@ -3,6 +3,7 @@
 
 from math import sqrt
 from itertools import chain
+import functools
 
 
 def iterable_and_iter(obj):
@@ -135,6 +136,62 @@ def map_with_multiple_input_sequences(data1, data2, data3):
     print(f"map_with_multiple_input_sequences({data1}, {data2}, {data3}): {list(results)}")
 
 
+def filter_function_returns_items_where_function_returns_true():
+    def my_filter(value):
+        return not value % 2
+
+    data = range(1, 20)
+    results = filter(my_filter, data)
+    print(f"filter_function_returns_items_where_function_returns_true() {data} -> {list(results)}")
+
+
+def filter_lambda_returns_items_where_function_returns_true():
+    data = range(1, 20)
+    results = filter(lambda x: not x % 2, data)
+    print(f"filter_function_returns_items_where_function_returns_true() {data} -> {list(results)}")
+
+
+def filter_via_none_removes_elements_that_evaluate_to_false():
+    data = range(1, 20)
+    results = filter(None, [-1, 0, 1, False, True, "a", [], "false", "true", '', 'hello', {}])
+    print(f"filter_via_none_removes_elements_that_evaluate_to_false() {data} -> {list(results)}")
+
+
+def reduce_as_a_summation():
+    # interim results passed as first arg, new element as the second
+    def my_operation(interim, value):
+        print(f"   my_operation({interim}, {value})")
+        return interim + value
+
+    # passing an empty sequence will result in a TypeError
+    data = range(1, 6)
+    results = functools.reduce(my_operation, data)
+    print(f"reduce_as_a_summation() {data} -> {results}")
+
+
+def reduce_with_one_element_never_calls_the_function():
+    def my_operation(interim, value):
+        print(f"   my_operation({interim}, {value})")
+        return interim + value
+    
+    # passing an empty sequence will result in a TypeError
+    data = [1]
+    results = functools.reduce(my_operation, data)
+    print(f"reduce_with_one_element_never_calls_the_function() {data} -> {results}")
+
+
+def reduce_with_optional_initial_starting_value():
+    def my_operation(interim, value):
+        print(f"   my_operation({interim}, {value})")
+        return interim + value
+    
+    # passing an empty sequence will result in a TypeError
+    data = range(2,11, 2)
+    initial_value = 10
+    results = functools.reduce(my_operation, data, initial_value)
+    print(f"reduce_with_optional_initial_starting_value() {data} -> {results}")
+
+
 def main():
     iterable_and_iter(['Spring', 'Summer', 'Autumn', 'Winter'])
     first_from_series(['A', 'B', 'C'])
@@ -156,6 +213,13 @@ def main():
         [1, 2, 3],
         ['emmet', 'bitsy', 'spike']
         )
+
+    filter_function_returns_items_where_function_returns_true()
+    filter_lambda_returns_items_where_function_returns_true()
+    filter_via_none_removes_elements_that_evaluate_to_false()
+
+    reduce_as_a_summation()
+    reduce_with_optional_initial_starting_value()
 
 
 if __name__ == '__main__':
