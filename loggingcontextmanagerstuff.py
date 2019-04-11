@@ -52,11 +52,32 @@ def logging_context_manager():
 @contextlib.contextmanager
 def nest_test(name):
     print(f'Entering {name}')
-    yield
+    yield name
     print(f'Exiting {name}')
 
 # use the above as 
 #
 # with nest_test('outer') as outer, nest_test('inner') as inner:
 #     blah blah
+#
+
+
+# a context manager that can be configured to propagate
+# exceptions onward, such as from inner to outer
+# context managers
+@contextlib.contextmanager
+def propagator(name, propagate):
+    try:
+        yield
+        print(name, 'exited normally.')
+    except Exception:
+        print(name, 'received an exception!')
+        if propagate:
+            raise
+
+# use the above as below, changing the True/False parameters to experiment:
+# 
+# with propagator('outer', True) as outer, propagator('inner', False) as inner:
+#     print("body")
+#     raise TypeError('cannot convert lead into gold!')
 #
